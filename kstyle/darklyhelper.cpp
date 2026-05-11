@@ -761,7 +761,7 @@ void Helper::renderButtonFrame(QPainter *painter,
         topHighlight(painter, frameRect, StyleConfigData::cornerRadius());
 
     // pressed animation
-    if (mode == AnimationPressed) {
+    if (StyleConfigData::buttonPressRipple() && mode == AnimationPressed) {
         QRegion oldRegion(painter->clipRegion());
         // constrain ripple effect area
         painter->setClipRect(frameRect, Qt::IntersectClip);
@@ -772,14 +772,14 @@ void Helper::renderButtonFrame(QPainter *painter,
         // Pythagorean theorem
         int finalRadius = qCeil(qSqrt(qPow(frameRect.width() / 2, 2) + qPow(frameRect.height() / 2, 2)));
 
-        // the animaiton looks choppy if the initial radius is 0, we choose something else
+        // the animation looks choppy if the initial radius is 0, so start from the button height
         int initRadius = qCeil(frameRect.height() / 2);
         painter->drawEllipse(frameRect.center(), initRadius + (finalRadius - initRadius) * opacity, initRadius + (finalRadius - initRadius) * opacity);
         painter->setClipRegion(oldRegion);
 
     }
 
-    // pressed button background when animation is done
+    // pressed button background
     else if (sunken && mouseOver) {
         // fix kcharselect combobox sunken: use the same background color when combobox is sunken
         const auto fc = focusColor(palette);
