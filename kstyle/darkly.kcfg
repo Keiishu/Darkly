@@ -109,7 +109,7 @@
     </entry>
 
     <entry name="ButtonPressRipple" type="Bool">
-      <default>false</default>
+      <default>true</default>
     </entry>
 
     <!-- transition flags -->
