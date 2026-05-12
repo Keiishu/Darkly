@@ -19,6 +19,7 @@ set(DARKLY_DESKTOP_THEME_WIDGETS
     line.svgz
     lineedit.svg
     # panel-background.svg
+    plasmoidheading.svgz
     radiobutton.svgz
     scrollbar.svg
     slider.svg
