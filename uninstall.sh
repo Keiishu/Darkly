@@ -15,6 +15,7 @@ for style in ${styles[@]}; do
     rm /usr/lib/qt5/plugins/styles/${style}5.so*
     rm /usr/lib64/qt5/plugins/styles/${style}5.so*
     rm /usr/share/color-schemes/${style}.colors
+    rm -r /usr/share/plasma/desktoptheme/${style}
     rm /usr/lib/qt6/plugins/styles/${style}6.so*
     rm /usr/lib64/qt6/plugins/styles/${style}6.so*
     rm /usr/share/kstyle/themes/${style}.themerc
@@ -36,5 +37,3 @@ for style in ${styles[@]}; do
     rm -r /usr/lib/cmake/${style}
     rm -r /usr/lib64/cmake/${style}
 done
-
-
