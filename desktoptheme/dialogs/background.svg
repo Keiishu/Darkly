@@ -201,7 +201,7 @@
      width="5"
      x="0"
      y="0" />
-  <g
+<!--  <g
      id="top"
      transform="translate(6.000002,9.999999)">
     <rect
@@ -218,7 +218,7 @@
        id="path1337"
        class="ColorScheme-Background"
        fill="currentColor" />
-  </g>
+  </g>-->
   <g
      id="bottom"
      transform="translate(6.000002,47.999999)">
