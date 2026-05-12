@@ -41,6 +41,7 @@
 #include <KSharedConfig>
 
 #include <QPainter>
+#include <QPen>
 #include <QTextStream>
 #include <QTimer>
 #include <QVariantAnimation>
@@ -125,6 +126,13 @@ inline CompositeShadowParams lookupShadowParams(int size)
         // Fallback to the Large size.
         return s_shadowParams[3];
     }
+}
+
+inline QColor withOpacity(const QColor &color, qreal opacity)
+{
+    QColor c(color);
+    c.setAlphaF(opacity);
+    return c;
 }
 }
 
@@ -905,28 +913,31 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 
     // top highlight
     if (qGray(this->titleBarColor().rgb()) < 130 && m_internalSettings->drawHighlight()) {
+        const qreal highlightWidth = m_internalSettings->drawHighlightWidth();
+        const QColor highlightColor = withOpacity(m_internalSettings->drawHighlightColor(), qreal(m_internalSettings->drawHighlightOpacity()) / 100.0);
+
         if (isMaximized() || !s->isAlphaChannelSupported()) {
-            painter->setPen(QColor(255, 255, 255, 30));
+            painter->setPen(QPen(highlightColor, highlightWidth));
             painter->drawLine(m_titleRect.topLeft(), m_titleRect.topRight());
 
         } else if (!c->isShaded()) {
-            QRect copy(m_titleRect.adjusted(isLeftEdge() ? -m_scaledCornerRadius : 0,
-                                            isTopEdge() ? -m_scaledCornerRadius : 0,
-                                            isRightEdge() ? m_scaledCornerRadius : 0,
-                                            m_scaledCornerRadius));
+            QRectF copy(m_titleRect.adjusted(isLeftEdge() ? -m_scaledCornerRadius : 0,
+                                             isTopEdge() ? -m_scaledCornerRadius : 0,
+                                             isRightEdge() ? m_scaledCornerRadius : 0,
+                                             m_scaledCornerRadius));
 
-            QPixmap pix = QPixmap(copy.width(), copy.height());
+            QPixmap pix = QPixmap(copy.size().toSize());
             pix.fill(Qt::transparent);
 
             QPainter p(&pix);
             p.setRenderHint(QPainter::Antialiasing);
             p.setPen(Qt::NoPen);
-            p.setBrush(QColor(255, 255, 255, 30));
+            p.setBrush(highlightColor);
             p.drawRoundedRect(copy, m_scaledCornerRadius, m_scaledCornerRadius);
 
             p.setBrush(Qt::black);
             p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-            p.drawRoundedRect(copy.adjusted(0, 1, 0, 3), m_scaledCornerRadius, m_scaledCornerRadius);
+            p.drawRoundedRect(copy.adjusted(0, highlightWidth, 0, highlightWidth + 2), m_scaledCornerRadius, m_scaledCornerRadius);
 
             painter->drawPixmap(copy, pix);
         }
@@ -1065,12 +1076,6 @@ void Decoration::createShadow()
             setShadow(g_sShadow);
             return;
         }
-
-        auto withOpacity = [](const QColor &color, qreal opacity) -> QColor {
-            QColor c(color);
-            c.setAlphaF(opacity);
-            return c;
-        };
 
         const QSize boxSize =
             BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));

@@ -118,6 +118,22 @@
       <default>true</default>
     </entry>
 
+    <entry name="DrawHighlightColor" type = "Color">
+      <default>255, 255, 255</default>
+    </entry>
+
+    <entry name="DrawHighlightWidth" type = "Double">
+      <default>1</default>
+      <min>0.1</min>
+      <max>10</max>
+    </entry>
+
+    <entry name="DrawHighlightOpacity" type = "Int">
+      <default>12</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
+
     <!-- animations -->
     <entry name="AnimationsEnabled" type = "Bool">
        <default>true</default>

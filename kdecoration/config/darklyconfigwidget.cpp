@@ -50,6 +50,16 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
+    connect(m_ui.drawHighlight, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
+    connect(m_ui.drawHighlight, &QAbstractButton::toggled, m_ui.drawHighlightColorLabel, &QWidget::setEnabled);
+    connect(m_ui.drawHighlight, &QAbstractButton::toggled, m_ui.drawHighlightColor, &QWidget::setEnabled);
+    connect(m_ui.drawHighlight, &QAbstractButton::toggled, m_ui.drawHighlightWidthLabel, &QWidget::setEnabled);
+    connect(m_ui.drawHighlight, &QAbstractButton::toggled, m_ui.drawHighlightWidth, &QWidget::setEnabled);
+    connect(m_ui.drawHighlight, &QAbstractButton::toggled, m_ui.drawHighlightOpacityLabel, &QWidget::setEnabled);
+    connect(m_ui.drawHighlight, &QAbstractButton::toggled, m_ui.drawHighlightOpacity, &QWidget::setEnabled);
+    connect(m_ui.drawHighlightColor, &KColorButton::changed, this, &ConfigWidget::updateChanged);
+    connect(m_ui.drawHighlightWidth, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
+    connect(m_ui.drawHighlightOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
     connect(m_ui.roundedCorners, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
     connect(m_ui.otherCornerRadius, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
@@ -81,6 +91,10 @@ void ConfigWidget::load()
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.outlineCloseButton->setChecked(m_internalSettings->outlineCloseButton());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
+    m_ui.drawHighlight->setChecked(m_internalSettings->drawHighlight());
+    m_ui.drawHighlightColor->setColor(m_internalSettings->drawHighlightColor());
+    m_ui.drawHighlightWidth->setValue(m_internalSettings->drawHighlightWidth());
+    m_ui.drawHighlightOpacity->setValue(m_internalSettings->drawHighlightOpacity());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsDuration->setValue(m_internalSettings->animationsDuration());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
@@ -122,6 +136,10 @@ void ConfigWidget::save()
     m_internalSettings->setOutlineCloseButton(m_ui.outlineCloseButton->isChecked());
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
+    m_internalSettings->setDrawHighlight(m_ui.drawHighlight->isChecked());
+    m_internalSettings->setDrawHighlightColor(m_ui.drawHighlightColor->color());
+    m_internalSettings->setDrawHighlightWidth(m_ui.drawHighlightWidth->value());
+    m_internalSettings->setDrawHighlightOpacity(m_ui.drawHighlightOpacity->value());
     m_internalSettings->setAnimationsEnabled(m_ui.animationsEnabled->isChecked());
     m_internalSettings->setAnimationsDuration(m_ui.animationsDuration->value());
     m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
@@ -170,6 +188,10 @@ void ConfigWidget::defaults()
     m_ui.outlineCloseButton->setChecked(m_internalSettings->outlineCloseButton());
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
+    m_ui.drawHighlight->setChecked(m_internalSettings->drawHighlight());
+    m_ui.drawHighlightColor->setColor(m_internalSettings->drawHighlightColor());
+    m_ui.drawHighlightWidth->setValue(m_internalSettings->drawHighlightWidth());
+    m_ui.drawHighlightOpacity->setValue(m_internalSettings->drawHighlightOpacity());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsDuration->setValue(m_internalSettings->animationsDuration());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
@@ -203,6 +225,14 @@ void ConfigWidget::updateChanged()
     else if (m_ui.drawBorderOnMaximizedWindows->isChecked() != m_internalSettings->drawBorderOnMaximizedWindows())
         modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
+        modified = true;
+    else if (m_ui.drawHighlight->isChecked() != m_internalSettings->drawHighlight())
+        modified = true;
+    else if (m_ui.drawHighlightColor->color() != m_internalSettings->drawHighlightColor())
+        modified = true;
+    else if (m_ui.drawHighlightWidth->value() != m_internalSettings->drawHighlightWidth())
+        modified = true;
+    else if (m_ui.drawHighlightOpacity->value() != m_internalSettings->drawHighlightOpacity())
         modified = true;
     else if (m_ui.roundedCorners->isChecked() != m_internalSettings->roundedCorners())
         modified = true;
